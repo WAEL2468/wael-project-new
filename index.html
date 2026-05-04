@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vodafone Egypt - باقات فودافون</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-signal"></i>
+                <span>Vodafone Egypt</span>
+            </div>
+            <nav class="nav">
+                <a href="#plans" class="active">الباقات</a>
+                <a href="#compare">قارن</a>
+                <a href="#customize">خصص</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>اكتشف باقاتك المثالية</h1>
+            <p>اختر من بين باقات Flex, Plus, Red, و DSL</p>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن باقة...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories">
+        <div class="container">
+            <h2>الفئات</h2>
+            <div class="category-list" id="categoryList">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-th"></i>
+                    <span>الكل</span>
+                </button>
+                <button class="category-btn" data-category="flex">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>فليكس</span>
+                </button>
+                <button class="category-btn" data-category="plus">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>بلس</span>
+                </button>
+                <button class="category-btn" data-category="plus_apps">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>بلس أبس</span>
+                </button>
+                <button class="category-btn" data-category="red">
+                    <i class="fas fa-star"></i>
+                    <span>ريد</span>
+                </button>
+                <button class="category-btn" data-category="dsl">
+                    <i class="fas fa-wifi"></i>
+                    <span>DSL</span>
+                </button>
+                <button class="category-btn" data-category="business flex">
+                    <i class="fas fa-briefcase"></i>
+                    <span>بيزنس فليكس</span>
+                </button>
+                <button class="category-btn" data-category="Red business">
+                    <i class="fas fa-briefcase"></i>
+                    <span>ريد بيزنس</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plans Grid -->
+    <section class="plans" id="plans">
+        <div class="container">
+            <h2>الباقات المتاحة</h2>
+            <div class="plans-grid" id="plansGrid"></div>
+        </div>
+    </section>
+
+    <!-- Plan Detail Modal -->
+    <div class="modal" id="planModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-header" id="modalHeader"></div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Compare Section -->
+    <section class="compare-section" id="compare">
+        <div class="container">
+            <h2>قارن الباقات</h2>
+            <div class="compare-container" id="compareContainer">
+                <div class="compare-empty">
+                    <i class="fas fa-exchange-alt"></i>
+                    <p>لم تضف أي باقات للمقارنة</p>
+                    <span>اختر حتى 3 باقات للمقارنة</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customize Section -->
+    <section class="customize-section" id="customize">
+        <div class="container">
+            <h2>خصص باقتك</h2>
+            <div class="customize-box">
+                <h3>أخبرنا عن احتياجاتك</h3>
+                <p>اضبط المؤشرات وسنقترح لك الباقة المثالية</p>
+                
+                <div class="slider-group">
+                    <label>
+                        <i class="fas fa-wifi"></i>
+                        استهلاك الإنترنت
+                        <span id="dataValue">5 جيجابايت/شهر</span>
+                    </label>
+                    <input type="range" id="dataSlider" min="0" max="100" value="5">
+                </div>
+                
+                <div class="slider-group">
+                    <label>
+                        <i class="fas fa-phone"></i>
+                        استهلاك المكالمات
+                        <span id="callValue">500 دقيقة/شهر</span>
+                    </label>
+                    <input type="range" id="callSlider" min="0" max="2000" value="500">
+                </div>
+                
+                <div class="slider-group">
+                    <label>
+                        <i class="fas fa-envelope"></i>
+                        استهلاك الرسائل
+                        <span id="smsValue">100 رسالة/شهر</span>
+                    </label>
+                    <input type="range" id="smsSlider" min="0" max="500" value="100">
+                </div>
+                
+                <div class="slider-group">
+                    <label>
+                        <i class="fas fa-wallet"></i>
+                        الميزانية الشهرية
+                        <span id="budgetValue">500 ج.م</span>
+                    </label>
+                    <input type="range" id="budgetSlider" min="50" max="2000" value="500">
+                </div>
+            </div>
+            
+            <div class="recommended-plans" id="recommendedPlans"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Vodafone Egypt. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
