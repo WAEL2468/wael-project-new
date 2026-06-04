@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vodafone</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══ THEME VARIABLES ═══ */
+:root {
+  --red:#E60000; --dark-red:#B30000;
+  --black:#0D0D0D; --white:#FFFFFF;
+  --surface:#F2F2F2; --card:#FFFFFF;
+  --border:#EDEDED; --muted:#9A9A9A; --text:#1A1A1A;
+  --green:#00875A; --orange:#FF6B00; --blue:#0066CC; --gold:#C8921A;
+  --topbar:#0D0D0D; --hero-from:#1A0000; --hero-to:#E60000;
+  --input-bg:#1C1C1C; --input-border:#2A2A2A; --input-color:#fff;
+}
+[data-theme="light"] {
+  --black:#FFFFFF; --surface:#F2F2F2; --card:#FFFFFF;
+  --border:#E0E0E0; --muted:#888; --text:#1A1A1A;
+  --topbar:#FFFFFF; --input-bg:#F5F5F5; --input-border:#DDD; --input-color:#1A1A1A;
+}
+[data-lang="ar"] { font-family:'Archivo',sans-serif; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { height:100%; overflow:hidden; }
+body { font-family:'Archivo',sans-serif; background:var(--black); color:var(--text); transition:background .3s,color .3s; }
+
+/* ═══ SCREENS ═══ */
+.screen { position:fixed; inset:0; overflow-y:auto; overflow-x:hidden; transition:opacity .3s,transform .3s; }
+.screen.hidden { opacity:0; pointer-events:none; transform:translateY(16px); }
+
+/* ═══ SPLASH ═══ */
+#splash { background:#0D0D0D; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; }
+.splash-logo { font-size:64px; font-weight:900; color:var(--red); letter-spacing:-2px; }
+.splash-dot { width:10px; height:10px; border-radius:50%; background:var(--red); animation:pulse 1.2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
+
+/* ═══ AUTH ═══ */
+#auth { background:#0D0D0D; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; min-height:100%; }
+.auth-logo { font-size:42px; font-weight:900; color:var(--red); letter-spacing:-1px; margin-bottom:4px; }
+.auth-tagline { color:#666; font-size:12px; letter-spacing:3px; text-transform:uppercase; margin-bottom:40px; text-align:center; }
+.auth-card { width:100%; max-width:380px; }
+.auth-tabs { display:flex; background:#1A1A1A; border-radius:12px; padding:4px; margin-bottom:24px; }
+.auth-tab { flex:1; padding:10px; text-align:center; border-radius:9px; font-size:14px; font-weight:600; cursor:pointer; border:none; font-family:'Archivo',sans-serif; color:#666; background:none; transition:all .2s; }
+.auth-tab.active { background:var(--red); color:#fff; }
+.field-group { margin-bottom:12px; }
+.field-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:#666; margin-bottom:5px; }
+.field-input { width:100%; padding:13px 16px; background:#1C1C1C; border:1.5px solid #2A2A2A; border-radius:10px; color:#fff; font-family:'Archivo',sans-serif; font-size:15px; outline:none; transition:border-color .2s; }
+.field-input:focus { border-color:var(--red); }
+.field-input::placeholder { color:#444; }
+.field-input option { background:#1C1C1C; color:#fff; }
+.auth-btn { width:100%; padding:14px; background:var(--red); color:#fff; border:none; border-radius:10px; font-family:'Archivo',sans-serif; font-size:15px; font-weight:700; cursor:pointer; margin-top:6px; transition:background .2s,transform .1s; }
+.auth-btn:active { transform:scale(.98); background:var(--dark-red); }
+.auth-error { color:#FF5555; font-size:13px; text-align:center; margin-top:8px; min-height:18px; }
+
+/* ═══ APP ═══ */
+#app { background:var(--surface); padding-bottom:72px; transition:background .3s; }
+.app-inner { max-width:430px; margin:0 auto; }
+
+/* ═══ TOPBAR ═══ */
+.topbar { background:var(--topbar); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; border-bottom:1px solid rgba(255,255,255,.05); transition:background .3s; }
+[data-theme="light"] .topbar { border-bottom:1px solid var(--border); box-shadow:0 1px 8px rgba(0,0,0,.06); }
+.topbar-logo { font-size:24px; font-weight:900; color:var(--red); letter-spacing:-1px; }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.topbar-name { color:#fff; font-size:13px; font-weight:700; }
+[data-theme="light"] .topbar-name { color:var(--text); }
+.tb-icon-btn { background:rgba(255,255,255,.08); border:none; width:34px; height:34px; border-radius:10px; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+[data-theme="light"] .tb-icon-btn { background:var(--surface); }
+.tb-icon-btn:hover { background:rgba(255,255,255,.15); }
+.notif-dot { position:relative; }
+.notif-dot::after { content:''; position:absolute; top:6px; right:6px; width:7px; height:7px; border-radius:50%; background:var(--red); border:2px solid var(--topbar); }
+
+/* ═══ PANELS ═══ */
+.panel { display:none; }
+.panel.active { display:block; }
+
+/* ═══ HERO ═══ */
+.hero { background:linear-gradient(135deg,#1A0000 0%,#3D0000 40%,var(--red) 100%); margin:12px; border-radius:20px; padding:22px; color:#fff; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; right:-40px; top:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.06); }
+.hero-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
+.hero-plan-badge { background:rgba(255,255,255,.15); border-radius:20px; padding:4px 12px; font-size:11px; font-weight:700; }
+.hero-phone { font-size:12px; opacity:.6; }
+.hero-balance-label { font-size:10px; text-transform:uppercase; letter-spacing:2px; opacity:.7; margin-bottom:3px; }
+.hero-balance { font-size:46px; font-weight:900; letter-spacing:-2px; line-height:1; }
+.hero-currency { font-size:16px; font-weight:600; opacity:.7; margin-left:3px; }
+.hero-renewal { font-size:10px; opacity:.5; margin-top:6px; }
+.hero-actions { display:flex; gap:8px; margin-top:18px; }
+.hero-action-btn { flex:1; padding:9px 6px; border-radius:10px; border:none; background:rgba(255,255,255,.15); color:#fff; font-family:'Archivo',sans-serif; font-size:11px; font-weight:600; cursor:pointer; transition:background .2s; }
+.hero-action-btn:active { background:rgba(255,255,255,.28); }
+
+/* ═══ USAGE ═══ */
+.usage-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:0 12px 12px; }
+.usage-card { background:var(--card); border-radius:16px; padding:14px; transition:background .3s; }
+.usage-card.full { grid-column:1/-1; }
+.uc-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.uc-icon { font-size:18px; }
+.uc-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+.uc-val { font-size:20px; font-weight:800; color:var(--text); line-height:1; }
+.uc-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+.bar-track { height:5px; background:var(--border); border-radius:3px; overflow:hidden; margin-top:8px; }
+.bar-fill { height:100%; border-radius:3px; transition:width .9s cubic-bezier(.4,0,.2,1); }
+
+/* ═══ SECTION ═══ */
+.section-header { display:flex; justify-content:space-between; align-items:center; padding:14px 16px 8px; }
+.section-title { font-size:15px; font-weight:800; color:var(--text); }
+.section-link { font-size:12px; color:var(--red); font-weight:600; cursor:pointer; }
+
+/* ═══ BUNDLE SCROLL ═══ */
+.bundle-scroll { display:flex; gap:12px; overflow-x:auto; padding:0 12px 12px; scrollbar-width:none; }
+.bundle-scroll::-webkit-scrollbar { display:none; }
+.bundle-card { min-width:155px; border-radius:18px; padding:16px; flex-shrink:0; cursor:pointer; transition:transform .2s; }
+.bundle-card:active { transform:scale(.96); }
+.bc-flex { background:linear-gradient(135deg,#0F1A3D,#1A2E6E); color:#fff; }
+.bc-business { background:linear-gradient(135deg,#072A1C,#0D4A35); color:#fff; }
+.bc-plus { background:linear-gradient(135deg,#2D1B00,#5C3900); color:#fff; }
+.bc-red { background:linear-gradient(135deg,#2D0000,#700000); color:#fff; }
+.bc-student { background:linear-gradient(135deg,#1A001A,#3D0052); color:#fff; }
+.bc-extreme { background:linear-gradient(135deg,#001A2D,#003D6B); color:#fff; }
+.bc-dsl { background:linear-gradient(135deg,#0A1A00,#1E4000); color:#fff; }
+.bundle-badge { display:inline-block; font-size:9px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; padding:3px 8px; border-radius:20px; margin-bottom:8px; }
+.bc-flex .bundle-badge { background:rgba(100,149,255,.25); color:#99b8ff; }
+.bc-business .bundle-badge { background:rgba(0,200,100,.2); color:#00e07a; }
+.bc-plus .bundle-badge { background:rgba(255,180,0,.2); color:#ffd060; }
+.bc-red .bundle-badge { background:rgba(255,50,50,.25); color:#ff9999; }
+.bc-student .bundle-badge { background:rgba(180,100,255,.25); color:#d4a0ff; }
+.bc-extreme .bundle-badge { background:rgba(0,180,255,.2); color:#80d8ff; }
+.bc-dsl .bundle-badge { background:rgba(100,255,100,.2); color:#80ff80; }
+.bundle-name { font-size:14px; font-weight:800; margin-bottom:3px; }
+.bundle-desc { font-size:10px; opacity:.6; margin-bottom:12px; line-height:1.4; }
+.bundle-price { font-size:24px; font-weight:900; line-height:1; }
+.bundle-price span { font-size:11px; font-weight:500; opacity:.7; }
+.bundle-features { margin-top:8px; display:flex; flex-direction:column; gap:3px; }
+.bundle-feature { font-size:10px; opacity:.75; }
+.bundle-feature::before { content:'✓ '; font-weight:700; }
+.bundle-buy-btn { margin-top:12px; width:100%; padding:8px; border:none; border-radius:8px; background:rgba(255,255,255,.18); color:#fff; font-family:'Archivo',sans-serif; font-size:12px; font-weight:700; cursor:pointer; }
+.bundle-buy-btn:active { background:rgba(255,255,255,.3); }
+
+/* ═══ QUICK ACTIONS ═══ */
+.quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:0 12px 16px; }
+.quick-item { background:var(--card); border-radius:14px; padding:13px 8px; text-align:center; cursor:pointer; border:none; font-family:'Archivo',sans-serif; transition:transform .15s; }
+.quick-item:active { transform:scale(.93); }
+.qi-icon { font-size:22px; margin-bottom:5px; }
+.qi-label { font-size:10px; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:.3px; }
+
+/* ═══ BILLS ═══ */
+.panel-title { font-size:20px; font-weight:900; padding:16px 16px 10px; color:var(--text); }
+.bill-pay-card { background:var(--red); margin:0 12px 14px; border-radius:18px; padding:18px; color:#fff; }
+.bpc-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.bpc-label { font-size:11px; opacity:.8; text-transform:uppercase; letter-spacing:1px; }
+.bpc-amount { font-size:34px; font-weight:900; letter-spacing:-1px; }
+.bpc-btn { background:#fff; color:var(--red); border:none; border-radius:10px; padding:11px; font-family:'Archivo',sans-serif; font-size:14px; font-weight:800; cursor:pointer; width:100%; }
+.bill-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.bill-item { background:var(--card); border-radius:14px; padding:14px; display:flex; align-items:center; justify-content:space-between; }
+.bi-month { font-size:14px; font-weight:700; color:var(--text); }
+.bi-date { font-size:11px; color:var(--muted); margin-top:2px; }
+.bi-amount { font-size:17px; font-weight:800; color:var(--text); }
+.bi-status { font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; margin-top:4px; display:inline-block; }
+.s-paid { background:#E8F5EE; color:var(--green); }
+.s-pending { background:#FFF4E5; color:var(--orange); }
+
+/* ═══ OFFERS ═══ */
+.offers-grid { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.offer-item { background:var(--card); border-radius:14px; padding:16px; display:flex; align-items:center; gap:12px; }
+.offer-icon { width:46px; height:46px; border-radius:13px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.oi-data { background:#EEF4FF; } .oi-call { background:#EEFFF5; } .oi-social { background:#F5EEFF; } .oi-intl { background:#FFF8EE; }
+.offer-body { flex:1; }
+.offer-name { font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.offer-desc { font-size:11px; color:var(--muted); }
+.offer-right { text-align:right; flex-shrink:0; }
+.offer-price { font-size:19px; font-weight:900; color:var(--red); }
+.offer-unit { font-size:10px; color:var(--muted); }
+.offer-btn { margin-top:5px; background:var(--red); color:#fff; border:none; border-radius:8px; padding:6px 14px; font-family:'Archivo',sans-serif; font-size:12px; font-weight:700; cursor:pointer; }
+
+/* ═══ BUNDLES IFRAME ═══ */
+.iframe-wrapper { margin:0 12px 12px; background:var(--card); border-radius:16px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+.iframe-bar { background:var(--black); padding:9px 14px; display:flex; align-items:center; gap:8px; }
+[data-theme="light"] .iframe-bar { background:#1A1A1A; }
+.iframe-live-dot { width:7px; height:7px; border-radius:50%; background:var(--red); animation:pulse 1.2s infinite; }
+.iframe-label { color:#aaa; font-size:10px; font-weight:700; letter-spacing:1px; flex:1; }
+.iframe-open { color:var(--red); font-size:11px; font-weight:700; text-decoration:none; }
+
+/* ═══ COMPARE ═══ */
+.compare-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:0 12px 12px; }
+.compare-select-card { background:var(--card); border-radius:14px; padding:14px; cursor:pointer; border:2px solid var(--border); transition:border-color .2s; }
+.compare-select-card.selected { border-color:var(--red); }
+.cs-badge { font-size:9px; font-weight:800; padding:2px 8px; border-radius:20px; margin-bottom:6px; display:inline-block; }
+.cs-name { font-size:13px; font-weight:700; color:var(--text); }
+.cs-price { font-size:18px; font-weight:900; color:var(--red); }
+.compare-table { margin:0 12px 16px; background:var(--card); border-radius:14px; overflow:hidden; }
+.ct-row { display:flex; border-bottom:1px solid var(--border); }
+.ct-row:last-child { border:none; }
+.ct-label { flex:1.2; padding:11px 14px; font-size:12px; font-weight:600; color:var(--muted); background:var(--surface); }
+.ct-a { flex:1; padding:11px 10px; font-size:12px; font-weight:700; color:var(--text); text-align:center; }
+.ct-b { flex:1; padding:11px 10px; font-size:12px; font-weight:700; color:var(--text); text-align:center; border-left:1px solid var(--border); }
+.compare-clear { display:block; margin:0 12px 12px; padding:11px; background:none; border:1.5px solid var(--border); border-radius:10px; font-family:'Archivo',sans-serif; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer; width:calc(100%-24px); text-align:center; }
+
+/* ═══ VODAFONE CASH ═══ */
+.cash-hero { background:linear-gradient(135deg,#0D2B00,#1A5200,#00A651); margin:12px; border-radius:20px; padding:22px; color:#fff; }
+.cash-balance { font-size:40px; font-weight:900; letter-spacing:-1px; }
+.cash-actions { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:0 12px 14px; }
+.ca-btn { background:var(--card); border-radius:14px; padding:12px 6px; text-align:center; border:none; cursor:pointer; font-family:'Archivo',sans-serif; }
+.ca-icon { font-size:20px; margin-bottom:4px; }
+.ca-label { font-size:10px; font-weight:700; color:var(--text); }
+.cash-txn-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.txn-item { background:var(--card); border-radius:12px; padding:14px; display:flex; align-items:center; gap:12px; }
+.txn-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.txn-in { background:#E8F5EE; } .txn-out { background:#FFF0F0; }
+.txn-desc { font-size:13px; font-weight:600; color:var(--text); }
+.txn-date { font-size:11px; color:var(--muted); }
+.txn-amt-in { font-size:15px; font-weight:800; color:var(--green); }
+.txn-amt-out { font-size:15px; font-weight:800; color:var(--red); }
+
+/* ═══ NOTIFICATIONS ═══ */
+.notif-list { padding:0 12px; display:flex; flex-direction:column; gap:8px; }
+.notif-item { background:var(--card); border-radius:14px; padding:14px; display:flex; gap:12px; align-items:flex-start; cursor:pointer; }
+.notif-item.unread { border-left:3px solid var(--red); }
+.notif-icon-wrap { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.ni-alert { background:#FFF0F0; } .ni-offer { background:#F5EEFF; } .ni-bill { background:#FFF8EE; } .ni-data { background:#EEF4FF; }
+.notif-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.notif-body { font-size:12px; color:var(--muted); line-height:1.4; }
+.notif-time { font-size:10px; color:var(--muted); margin-top:4px; }
+
+/* ═══ ACCOUNT ═══ */
+.account-hero { background:var(--black); margin:12px; border-radius:20px; padding:22px; color:#fff; }
+[data-theme="light"] .account-hero { background:#1A1A1A; }
+.ah-avatar { width:60px; height:60px; border-radius:50%; background:var(--red); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900; margin-bottom:12px; }
+.ah-name { font-size:20px; font-weight:900; margin-bottom:2px; }
+.ah-phone { font-size:13px; color:#888; }
+.ah-plan { display:inline-block; background:rgba(230,0,0,.25); border:1px solid rgba(230,0,0,.4); color:#ff9999; font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; margin-top:8px; }
+.account-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:0 12px 10px; }
+.stat-card { background:var(--card); border-radius:14px; padding:14px; }
+.stat-val { font-size:22px; font-weight:900; color:var(--red); }
+.stat-label { font-size:10px; color:var(--muted); margin-top:3px; font-weight:600; text-transform:uppercase; }
+.account-menu { margin:0 12px; background:var(--card); border-radius:14px; overflow:hidden; }
+.menu-item { padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; border:none; background:none; width:100%; font-family:'Archivo',sans-serif; border-bottom:1px solid var(--border); }
+.menu-item:last-child { border:none; }
+.mi-icon { font-size:18px; width:26px; }
+.mi-label { font-size:14px; font-weight:600; color:var(--text); flex:1; text-align:left; }
+.mi-arrow { color:var(--muted); font-size:16px; }
+
+/* ═══ SETTINGS SHEET ═══ */
+.settings-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border); }
+.settings-row:last-child { border:none; }
+.sr-label { font-size:14px; font-weight:600; color:var(--text); }
+.sr-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.toggle-switch { position:relative; width:46px; height:26px; flex-shrink:0; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; inset:0; background:#CCC; border-radius:13px; cursor:pointer; transition:.3s; }
+.toggle-slider::before { content:''; position:absolute; width:20px; height:20px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.3s; }
+input:checked + .toggle-slider { background:var(--red); }
+input:checked + .toggle-slider::before { transform:translateX(20px); }
+.lang-toggle { display:flex; background:var(--surface); border-radius:10px; padding:3px; gap:3px; }
+.lang-btn { flex:1; padding:7px 12px; border:none; border-radius:8px; font-family:'Archivo',sans-serif; font-size:13px; font-weight:600; cursor:pointer; background:none; color:var(--muted); transition:all .2s; }
+.lang-btn.active { background:var(--red); color:#fff; }
+
+/* ═══ BOTTOM NAV ═══ */
+.bottom-nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:430px; background:var(--card); border-top:1px solid var(--border); display:flex; padding:6px 0 max(6px,env(safe-area-inset-bottom)); z-index:50; box-shadow:0 -2px 16px rgba(0,0,0,.08); transition:background .3s; }
+.nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; padding:4px 2px; border:none; background:none; cursor:pointer; font-family:'Archivo',sans-serif; }
+.nav-icon { font-size:20px; }
+.nav-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); }
+.nav-btn.active .nav-label { color:var(--red); }
+
+/* ═══ MODAL ═══ */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; align-items:flex-end; justify-content:center; backdrop-filter:blur(3px); }
+.modal-bg.open { display:flex; }
+.modal-sheet { background:var(--card); border-radius:22px 22px 0 0; padding:24px 20px max(24px,env(safe-area-inset-bottom)); width:100%; max-width:430px; animation:sheetUp .28s cubic-bezier(.4,0,.2,1); max-height:88vh; overflow-y:auto; }
+@keyframes sheetUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.sheet-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 18px; }
+.sheet-title { font-size:19px; font-weight:900; margin-bottom:18px; color:var(--text); }
+.amount-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px; }
+.amount-chip { padding:13px 8px; border:2px solid var(--border); border-radius:11px; text-align:center; font-weight:800; font-size:14px; cursor:pointer; background:none; font-family:'Archivo',sans-serif; color:var(--text); transition:all .15s; }
+.amount-chip.selected { border-color:var(--red); color:var(--red); background:#FFF0F0; }
+.modal-input { width:100%; padding:13px 16px; border:2px solid var(--border); border-radius:11px; font-size:15px; font-family:'Archivo',sans-serif; outline:none; margin-bottom:14px; background:var(--card); color:var(--text); }
+.modal-input:focus { border-color:var(--red); }
+.modal-btn { width:100%; padding:14px; background:var(--red); color:#fff; border:none; border-radius:10px; font-family:'Archivo',sans-serif; font-size:15px; font-weight:700; cursor:pointer; }
+
+/* ═══ CASH SEND MODAL ═══ */
+.cash-form { display:flex; flex-direction:column; gap:12px; }
+.cash-form input { width:100%; padding:13px 16px; border:2px solid var(--border); border-radius:11px; font-size:15px; font-family:'Archivo',sans-serif; outline:none; background:var(--card); color:var(--text); }
+.cash-form input:focus { border-color:var(--green); }
+
+/* ═══ TOAST ═══ */
+.toast { position:fixed; bottom:82px; left:50%; transform:translateX(-50%) translateY(16px); background:#1A1A1A; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; font-weight:700; z-index:300; opacity:0; transition:all .3s; pointer-events:none; white-space:nowrap; max-width:calc(100vw - 40px); text-align:center; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.ok { background:#00875A; }
+.toast.err { background:#C62828; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div class="screen" id="splash">
+  <div class="splash-logo">vodafone</div>
+  <div class="splash-dot"></div>
+</div>
+
+<!-- AUTH -->
+<div class="screen hidden" id="auth">
+  <div class="auth-logo">vodafone</div>
+  <div class="auth-tagline" id="auth-tagline">The Future Is Exciting. Ready?</div>
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-signin" onclick="setAuthMode('signin')" id="tab-signin-btn">Sign In</button>
+      <button class="auth-tab" id="tab-register" onclick="setAuthMode('register')">Register</button>
+    </div>
+    <div class="field-group">
+      <div class="field-label" id="lbl-phone">Phone Number</div>
+      <input class="field-input" id="f-phone" type="tel" placeholder="01012345678">
+    </div>
+    <div class="field-group" id="fg-name" style="display:none">
+      <div class="field-label" id="lbl-name">Full Name</div>
+      <input class="field-input" id="f-name" type="text" placeholder="Your full name">
+    </div>
+    <div class="field-group">
+      <div class="field-label" id="lbl-pass">Password</div>
+      <input class="field-input" id="f-pass" type="password" placeholder="Min. 4 characters">
+    </div>
+    <div class="field-group" id="fg-plan" style="display:none">
+      <div class="field-label" id="lbl-plan">Choose Plan</div>
+      <select class="field-input" id="f-plan">
+        <option value="Flex S|49">Flex S — 49 EGP/mo</option>
+        <option value="Flex M|89">Flex M — 89 EGP/mo</option>
+        <option value="Flex L|129" selected>Flex L — 129 EGP/mo</option>
+        <option value="Red Plus|199">Red Plus — 199 EGP/mo</option>
+        <option value="Business Pro|299">Business — 299 EGP/mo</option>
+        <option value="Extreme|159">Extreme — 159 EGP/mo</option>
+      </select>
+    </div>
+    <button class="auth-btn" id="auth-btn" onclick="doAuth()">Sign In</button>
+    <div class="auth-error" id="auth-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="screen hidden" id="app">
+  <div class="app-inner">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-logo">vodafone</div>
+      <div class="topbar-right">
+        <div class="topbar-name" id="top-name">—</div>
+        <button class="tb-icon-btn notif-dot" id="notif-btn" onclick="switchTab('notifs')" title="Notifications">🔔</button>
+        <button class="tb-icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
+      </div>
+    </div>
+
+    <!-- ─── HOME ─── -->
+    <div class="panel active" id="panel-home">
+      <div class="hero">
+        <div class="hero-top">
+          <div class="hero-plan-badge" id="hero-plan">—</div>
+          <div class="hero-phone" id="hero-phone">—</div>
+        </div>
+        <div class="hero-balance-label" id="lbl-balance">Available Balance</div>
+        <div class="hero-balance"><span id="hero-balance">0.00</span><span class="hero-currency">EGP</span></div>
+        <div class="hero-renewal" id="hero-renewal">—</div>
+        <div class="hero-actions">
+          <button class="hero-action-btn" onclick="openRecharge()">💳 <span id="ha-recharge">Recharge</span></button>
+          <button class="hero-action-btn" onclick="switchTab('bills')">🧾 <span id="ha-bills">Bills</span></button>
+          <button class="hero-action-btn" onclick="switchTab('cash')">💚 <span id="ha-cash">V.Cash</span></button>
+          <button class="hero-action-btn" onclick="switchTab('offers')">🎁 <span id="ha-offers">Offers</span></button>
+        </div>
+      </div>
+
+      <div class="usage-grid">
+        <div class="usage-card">
+          <div class="uc-head"><span class="uc-icon">📶</span><span class="uc-label" id="lbl-data">Data</span></div>
+          <div class="uc-val" id="uc-data-val">—</div>
+          <div class="uc-sub" id="uc-data-sub">—</div>
+          <div class="bar-track"><div class="bar-fill" id="bar-data" style="background:var(--red);width:0%"></div></div>
+        </div>
+        <div class="usage-card">
+          <div class="uc-head"><span class="uc-icon">📞</span><span class="uc-label" id="lbl-mins">Minutes</span></div>
+          <div class="uc-val" id="uc-min-val">—</div>
+          <div class="uc-sub" id="uc-min-sub">—</div>
+          <div class="bar-track"><div class="bar-fill" id="bar-min" style="background:var(--green);width:0%"></div></div>
+        </div>
+        <div class="usage-card full">
+          <div class="uc-head"><span class="uc-icon">💬</span><span class="uc-label" id="lbl-sms">SMS</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <div><div class="uc-val" id="uc-sms-val">—</div><div class="uc-sub" id="uc-sms-sub">—</div></div>
+            <div style="font-size:26px;font-weight:900;color:var(--muted);opacity:.2">SMS</div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" id="bar-sms" style="background:var(--orange);width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title" id="lbl-bundles-title">Our Bundles</div>
+        <div class="section-link" onclick="switchTab('bundles')" id="lbl-see-all">See all →</div>
+      </div>
+      <div class="bundle-scroll" id="bundle-scroll"></div>
+
+      <div class="section-header"><div class="section-title" id="lbl-quick">Quick Actions</div></div>
+      <div class="quick-grid">
+        <button class="quick-item" onclick="openRecharge()"><div class="qi-icon">💳</div><div class="qi-label" id="qa-recharge">Recharge</div></button>
+        <button class="quick-item" onclick="switchTab('bills')"><div class="qi-icon">🧾</div><div class="qi-label" id="qa-bills">Bills</div></button>
+        <button class="quick-item" onclick="switchTab('bundles')"><div class="qi-icon">📦</div><div class="qi-label" id="qa-bundles">Bundles</div></button>
+        <button class="quick-item" onclick="switchTab('cash')"><div class="qi-icon">💚</div><div class="qi-label" id="qa-cash">V.Cash</div></button>
+        <button class="quick-item" onclick="switchTab('compare')"><div class="qi-icon">⚖️</div><div class="qi-label" id="qa-compare">Compare</div></button>
+        <button class="quick-item" onclick="switchTab('offers')"><div class="qi-icon">🎁</div><div class="qi-label" id="qa-offers">Offers</div></button>
+        <button class="quick-item" onclick="switchTab('notifs')"><div class="qi-icon">🔔</div><div class="qi-label" id="qa-notifs">Alerts</div></button>
+        <button class="quick-item" onclick="switchTab('account')"><div class="qi-icon">👤</div><div class="qi-label" id="qa-account">Account</div></button>
+      </div>
+    </div>
+
+    <!-- ─── BUNDLES IFRAME ─── -->
+    <div class="panel" id="panel-bundles">
+      <div class="panel-title" id="lbl-bundles-panel">All Bundles</div>
+      <div class="iframe-wrapper">
+        <div class="iframe-bar">
+          <div class="iframe-live-dot"></div>
+          <span class="iframe-label">LIVE — VODAFONE PORTAL</span>
+          <a href="https://wael2468.github.io/my-app/" target="_blank" class="iframe-open">Open ↗</a>
+        </div>
+        <iframe src="https://wael2468.github.io/my-app/" style="width:100%;height:76vh;border:none;display:block;" loading="lazy" title="Vodafone Egypt Bundles"></iframe>
+      </div>
+    </div>
+
+    <!-- ─── COMPARE ─── -->
+    <div class="panel" id="panel-compare">
+      <div class="panel-title" id="lbl-compare-panel">Compare Bundles</div>
+      <div style="padding:0 16px 10px;font-size:12px;color:var(--muted);" id="lbl-compare-hint">Select up to 2 bundles to compare</div>
+      <div class="compare-grid" id="compare-grid"></div>
+      <div id="compare-table-wrap"></div>
+      <button class="compare-clear" onclick="clearCompare()" id="lbl-compare-clear">Clear Selection</button>
+    </div>
+
+    <!-- ─── BILLS ─── -->
+    <div class="panel" id="panel-bills">
+      <div class="panel-title" id="lbl-bills-panel">My Bills</div>
+      <div class="bill-pay-card">
+        <div class="bpc-top">
+          <div><div class="bpc-label" id="lbl-current-bill">Current Bill</div><div class="bpc-amount" id="bill-amount">149 EGP</div></div>
+          <div style="font-size:30px">🧾</div>
+        </div>
+        <button class="bpc-btn" onclick="payCurrentBill()" id="lbl-pay-now">Pay Now</button>
+      </div>
+      <div class="bill-list" id="bill-list"></div>
+    </div>
+
+    <!-- ─── OFFERS ─── -->
+    <div class="panel" id="panel-offers">
+      <div class="panel-title" id="lbl-offers-panel">Special Offers</div>
+      <div class="offers-grid" id="offers-grid"></div>
+    </div>
+
+    <!-- ─── VODAFONE CASH ─── -->
+    <div class="panel" id="panel-cash">
+      <div class="panel-title" id="lbl-cash-panel">Vodafone Cash</div>
+      <div class="cash-hero">
+        <div style="font-size:11px;opacity:.7;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;" id="lbl-cash-balance">Cash Balance</div>
+        <div class="cash-balance"><span id="cash-balance">0.00</span> <span style="font-size:16px;opacity:.7">EGP</span></div>
+        <div style="font-size:11px;opacity:.5;margin-top:6px;" id="lbl-cash-sub">Instant transfers, bills, and more</div>
+      </div>
+      <div class="cash-actions">
+        <button class="ca-btn" onclick="openCashSend()"><div class="ca-icon">📤</div><div class="ca-label" id="lbl-send">Send</div></button>
+        <button class="ca-btn" onclick="openCashReceive()"><div class="ca-icon">📥</div><div class="ca-label" id="lbl-receive">Receive</div></button>
+        <button class="ca-btn" onclick="openCashTopup()"><div class="ca-icon">💳</div><div class="ca-label" id="lbl-topup">Top Up</div></button>
+        <button class="ca-btn"><div class="ca-icon">🏦</div><div class="ca-label" id="lbl-bank">Bank</div></button>
+      </div>
+      <div class="section-header"><div class="section-title" id="lbl-txn-history">Transactions</div></div>
+      <div class="cash-txn-list" id="txn-list"></div>
+    </div>
+
+    <!-- ─── NOTIFICATIONS ─── -->
+    <div class="panel" id="panel-notifs">
+      <div class="panel-title" id="lbl-notifs-panel">Notifications</div>
+      <div class="notif-list" id="notif-list"></div>
+    </div>
+
+    <!-- ─── ACCOUNT ─── -->
+    <div class="panel" id="panel-account">
+      <div class="panel-title" id="lbl-account-panel">My Account</div>
+      <div class="account-hero">
+        <div class="ah-avatar" id="ah-avatar">?</div>
+        <div class="ah-name" id="ah-name">—</div>
+        <div class="ah-phone" id="ah-phone">—</div>
+        <div class="ah-plan" id="ah-plan">—</div>
+      </div>
+      <div class="account-stats">
+        <div class="stat-card"><div class="stat-val" id="st-balance">—</div><div class="stat-label" id="lbl-st-balance">Balance</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-data">—</div><div class="stat-label" id="lbl-st-data">Data Left</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-mins">—</div><div class="stat-label" id="lbl-st-mins">Minutes</div></div>
+        <div class="stat-card"><div class="stat-val" id="st-sms">—</div><div class="stat-label" id="lbl-st-sms">SMS Left</div></div>
+      </div>
+      <div class="account-menu">
+        <button class="menu-item" onclick="openSettings()"><span class="mi-icon">⚙️</span><span class="mi-label" id="mi-settings">Settings & Theme</span><span class="mi-arrow">›</span></button>
+        <button class="menu-item"><span class="mi-icon">🔒</span><span class="mi-label" id="mi-pass">Change Password</span><span class="mi-arrow">›</span></button>
+        <button class="menu-item"><span class="mi-icon">🌍</span><span class="mi-label" id="mi-roam">International Roaming</span><span class="mi-arrow">›</span></button>
+        <button class="menu-item"><span class="mi-icon">🎧</span><span class="mi-label" id="mi-support">Customer Support</span><span class="mi-arrow">›</span></button>
+        <button class="menu-item" onclick="doSignout()"><span class="mi-icon">🚪</span><span class="mi-label" style="color:var(--red)" id="mi-signout">Sign Out</span><span class="mi-arrow">›</span></button>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <button class="nav-btn active" id="nav-home" onclick="switchTab('home')"><span class="nav-icon">🏠</span><span class="nav-label" id="nl-home">Home</span></button>
+      <button class="nav-btn" id="nav-bundles" onclick="switchTab('bundles')"><span class="nav-icon">📦</span><span class="nav-label" id="nl-bundles">Bundles</span></button>
+      <button class="nav-btn" id="nav-cash" onclick="switchTab('cash')"><span class="nav-icon">💚</span><span class="nav-label" id="nl-cash">Cash</span></button>
+      <button class="nav-btn" id="nav-bills" onclick="switchTab('bills')"><span class="nav-icon">🧾</span><span class="nav-label" id="nl-bills">Bills</span></button>
+      <button class="nav-btn" id="nav-account" onclick="switchTab('account')"><span class="nav-icon">👤</span><span class="nav-label" id="nl-account">Account</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- RECHARGE MODAL -->
+<div class="modal-bg" id="modal-recharge">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="lbl-recharge-title">Recharge Balance</div>
+    <div class="amount-grid">
+      <button class="amount-chip" onclick="pickAmt(20,this)">20</button>
+      <button class="amount-chip" onclick="pickAmt(50,this)">50</button>
+      <button class="amount-chip" onclick="pickAmt(100,this)">100</button>
+      <button class="amount-chip" onclick="pickAmt(150,this)">150</button>
+      <button class="amount-chip" onclick="pickAmt(200,this)">200</button>
+      <button class="amount-chip" onclick="pickAmt(500,this)">500</button>
+    </div>
+    <input class="modal-input" type="number" id="custom-amt" placeholder="Custom amount (EGP)">
+    <button class="modal-btn" onclick="doRecharge()" id="lbl-recharge-btn">Recharge Now</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-bg" id="modal-settings">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="lbl-settings-title">Settings</div>
+    <div class="settings-row">
+      <div><div class="sr-label" id="sr-darkmode">Dark Mode</div><div class="sr-sub" id="sr-darkmode-sub">Toggle dark/light theme</div></div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle-dark" onchange="toggleDark(this.checked)" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="sr-label" id="sr-notifs">Push Notifications</div><div class="sr-sub" id="sr-notifs-sub">Bill reminders & offers</div></div>
+      <label class="toggle-switch"><input type="checkbox" id="toggle-notifs" onchange="toggleNotifs(this.checked)" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="settings-row">
+      <div><div class="sr-label" id="sr-lang">Language / اللغة</div><div class="sr-sub" id="sr-lang-sub">English / العربية</div></div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">ع</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CASH SEND MODAL -->
+<div class="modal-bg" id="modal-cash-send">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="lbl-send-title">Send Money</div>
+    <div class="cash-form">
+      <input type="tel" id="send-phone" placeholder="Recipient phone number">
+      <input type="number" id="send-amt" placeholder="Amount (EGP)">
+      <input type="text" id="send-note" placeholder="Note (optional)">
+      <button class="modal-btn" style="background:var(--green)" onclick="doSendMoney()" id="lbl-send-btn">Send Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- CASH RECEIVE MODAL -->
+<div class="modal-bg" id="modal-cash-receive">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="lbl-receive-title">Receive Money</div>
+    <div style="text-align:center;padding:10px 0 20px;">
+      <div style="font-size:60px;margin-bottom:12px;">📱</div>
+      <div style="font-size:22px;font-weight:900;color:var(--text);" id="receive-phone-display">—</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px;" id="lbl-receive-hint">Share your number to receive money</div>
+    </div>
+    <button class="modal-btn" style="background:var(--green)" onclick="closeModal('modal-cash-receive')" id="lbl-close-btn">Close</button>
+  </div>
+</div>
+
+<!-- CASH TOPUP MODAL -->
+<div class="modal-bg" id="modal-cash-topup">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="lbl-topup-title">Top Up Cash Wallet</div>
+    <div class="amount-grid">
+      <button class="amount-chip" onclick="pickTopup(50,this)">50</button>
+      <button class="amount-chip" onclick="pickTopup(100,this)">100</button>
+      <button class="amount-chip" onclick="pickTopup(200,this)">200</button>
+      <button class="amount-chip" onclick="pickTopup(300,this)">300</button>
+      <button class="amount-chip" onclick="pickTopup(500,this)">500</button>
+      <button class="amount-chip" onclick="pickTopup(1000,this)">1000</button>
+    </div>
+    <input class="modal-input" type="number" id="topup-custom" placeholder="Custom amount (EGP)">
+    <button class="modal-btn" style="background:var(--green)" onclick="doCashTopup()" id="lbl-topup-btn">Top Up Now</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const BUNDLES = [
+  { cls:'bc-flex',    badge:'Flex',     name:'Flex S',        nameAr:'فليكس S',        desc:'Starter everyday plan',   descAr:'الباقة الأساسية',  price:49,  features:['5GB Data','100 Mins','50 SMS','Social Apps'],       featuresAr:['5 جيجا إنترنت','100 دقيقة','50 رسالة','تطبيقات سوشيال'] },
+  { cls:'bc-flex',    badge:'Flex',     name:'Flex L',        nameAr:'فليكس L',        desc:'Flexible large plan',     descAr:'باقة فليكس كبيرة', price:129, features:['15GB Data','300 Mins','200 SMS','4G+'],               featuresAr:['15 جيجا','300 دقيقة','200 رسالة','4G+'] },
+  { cls:'bc-red',     badge:'Red',      name:'Vodafone Red',  nameAr:'فودافون ريد',    desc:'Our flagship plan',       descAr:'الباقة الرائدة',   price:179, features:['25GB Data','Unlimited Mins','Unlimited SMS','5G'],   featuresAr:['25 جيجا','مكالمات غير محدودة','رسائل غير محدودة','5G'] },
+  { cls:'bc-plus',    badge:'Plus',     name:'Red Plus',      nameAr:'ريد بلس',        desc:'More of everything',      descAr:'أكثر من كل شيء',   price:249, features:['50GB Data','Unlimited Mins','Roaming','VIP Support'], featuresAr:['50 جيجا','مكالمات غير محدودة','التجوال','دعم VIP'] },
+  { cls:'bc-extreme', badge:'Extreme',  name:'Extreme',       nameAr:'إكستريم',        desc:'Ultimate power plan',     descAr:'الباقة القوية',    price:199, features:['35GB Data','500 Mins','300 SMS','Netflix Included'],  featuresAr:['35 جيجا','500 دقيقة','300 رسالة','نتفليكس مجاناً'] },
+  { cls:'bc-business',badge:'Business', name:'Business Pro',  nameAr:'بيزنس برو',      desc:'Built for business',      descAr:'للأعمال التجارية', price:299, features:['Unlimited Data','Unlimited Mins','Priority Net','Dedicated Support'], featuresAr:['إنترنت غير محدود','مكالمات غير محدودة','شبكة مميزة','دعم مخصص'] },
+  { cls:'bc-student', badge:'Student',  name:'Student Pack',  nameAr:'باقة الطلاب',   desc:'Best for students',       descAr:'للطلاب فقط',       price:39,  features:['8GB Data','60 Mins','WhatsApp Free','Special Price'],  featuresAr:['8 جيجا','60 دقيقة','واتساب مجاناً','سعر خاص'] },
+  { cls:'bc-dsl',     badge:'DSL',      name:'Home DSL',      nameAr:'DSL المنزلي',    desc:'Home broadband plan',     descAr:'الإنترنت المنزلي', price:350, features:['100Mbps Speed','Unlimited Data','Free Router','24/7 Support'], featuresAr:['سرعة 100 ميجا','بيانات غير محدودة','راوتر مجاني','دعم 24/7'] },
+];
+
+const OFFERS = [
+  { icon:'📶', cls:'oi-data',   name:'Extra 5GB',        nameAr:'5 جيجا إضافية',    desc:'Valid 7 days',         descAr:'صالح 7 أيام',        price:25 },
+  { icon:'📞', cls:'oi-call',   name:'Unlimited Calls',  nameAr:'مكالمات غير محدودة',desc:'Valid 3 days',         descAr:'صالح 3 أيام',        price:40 },
+  { icon:'📱', cls:'oi-social', name:'Social Pack',      nameAr:'باقة سوشيال',      desc:'FB·WhatsApp·TikTok',   descAr:'فيسبوك·واتساب·تيكتوك',price:15 },
+  { icon:'🌍', cls:'oi-intl',   name:'International',    nameAr:'باقة دولية',       desc:'Call abroad 1 day',    descAr:'مكالمات خارجية يوم',  price:60 },
+];
+
+const NOTIFICATIONS = [
+  { icon:'🧾', cls:'ni-bill',  title:'Bill Due Soon',       titleAr:'الفاتورة تقترب',    body:'Your June bill of 149 EGP is due in 3 days.',  bodyAr:'فاتورة يونيو 149 جنيه مستحقة خلال 3 أيام.', time:'2h ago',   unread:true  },
+  { icon:'🎁', cls:'ni-offer', title:'New Offer For You!',   titleAr:'عرض جديد لك!',      body:'Get Extra 10GB for just 35 EGP — today only!', bodyAr:'10 جيجا إضافية بـ 35 جنيه فقط — اليوم!',    time:'5h ago',   unread:true  },
+  { icon:'📶', cls:'ni-data',  title:'Data Running Low',     titleAr:'الإنترنت ينتهي',    body:'You\'ve used 80% of your monthly data.',       bodyAr:'لقد استخدمت 80% من باقة الإنترنت.',          time:'1d ago',   unread:false },
+  { icon:'⚡', cls:'ni-alert', title:'Recharge Successful',  titleAr:'تم الشحن بنجاح',   body:'100 EGP added to your account.',               bodyAr:'تم إضافة 100 جنيه لرصيدك.',                  time:'2d ago',   unread:false },
+];
+
+const TRANSLATIONS = {
+  en: {
+    tagline:'The Future Is Exciting. Ready?', signin:'Sign In', register:'Register',
+    phone:'Phone Number', name:'Full Name', password:'Password', choosePlan:'Choose Plan',
+    authBtn_in:'Sign In', authBtn_reg:'Create Account',
+    balanceLabel:'Available Balance', recharge:'Recharge', bills:'Bills', cash:'V.Cash', offers:'Offers',
+    data:'Data', mins:'Minutes', sms:'SMS', bundlesTitle:'Our Bundles', seeAll:'See all →', quick:'Quick Actions',
+    qaRecharge:'Recharge', qaBills:'Bills', qaBundles:'Bundles', qaCash:'V.Cash',
+    qaCompare:'Compare', qaOffers:'Offers', qaNotifs:'Alerts', qaAccount:'Account',
+    bundlesPanel:'All Bundles', comparePanel:'Compare Bundles', compareHint:'Select up to 2 bundles to compare',
+    compareClear:'Clear Selection', billsPanel:'My Bills', currentBill:'Current Bill', payNow:'Pay Now',
+    offersPanel:'Special Offers', cashPanel:'Vodafone Cash', cashBalance:'Cash Balance',
+    cashSub:'Instant transfers, bills, and more', send:'Send', receive:'Receive', topup:'Top Up', bank:'Bank',
+    txnHistory:'Transactions', notifsPanel:'Notifications', accountPanel:'My Account',
+    stBalance:'Balance (EGP)', stData:'Data Left (GB)', stMins:'Minutes', stSms:'SMS Left',
+    miSettings:'Settings & Theme', miPass:'Change Password', miRoam:'International Roaming',
+    miSupport:'Customer Support', miSignout:'Sign Out',
+    nlHome:'Home', nlBundles:'Bundles', nlCash:'Cash', nlBills:'Bills', nlAccount:'Account',
+    rechargeTitle:'Recharge Balance', rechargeBtn:'Recharge Now',
+    settingsTitle:'Settings', srDarkmode:'Dark Mode', srDarksub:'Toggle dark/light theme',
+    srNotifs:'Push Notifications', srNotifsSub:'Bill reminders & offers',
+    srLang:'Language / اللغة', srLangSub:'English / العربية',
+    sendTitle:'Send Money', sendBtn:'Send Now', receiveTitle:'Receive Money',
+    receiveHint:'Share your number to receive money', closeBtn:'Close',
+    topupTitle:'Top Up Cash Wallet', topupBtn:'Top Up Now',
+    subscribe:'Subscribe', buy:'Buy',
+  },
+  ar: {
+    tagline:'المستقبل مثير. هل أنت مستعد؟', signin:'تسجيل الدخول', register:'إنشاء حساب',
+    phone:'رقم الهاتف', name:'الاسم بالكامل', password:'كلمة المرور', choosePlan:'اختر الباقة',
+    authBtn_in:'تسجيل الدخول', authBtn_reg:'إنشاء حساب',
+    balanceLabel:'الرصيد المتاح', recharge:'شحن', bills:'الفواتير', cash:'فودافون كاش', offers:'العروض',
+    data:'الإنترنت', mins:'الدقائق', sms:'الرسائل', bundlesTitle:'الباقات', seeAll:'عرض الكل ←', quick:'إجراءات سريعة',
+    qaRecharge:'شحن', qaBills:'فواتير', qaBundles:'باقات', qaCash:'كاش',
+    qaCompare:'مقارنة', qaOffers:'عروض', qaNotifs:'تنبيهات', qaAccount:'حسابي',
+    bundlesPanel:'كل الباقات', comparePanel:'مقارنة الباقات', compareHint:'اختر باقتين للمقارنة',
+    compareClear:'مسح الاختيار', billsPanel:'فواتيري', currentBill:'الفاتورة الحالية', payNow:'ادفع الآن',
+    offersPanel:'العروض الخاصة', cashPanel:'فودافون كاش', cashBalance:'رصيد الكاش',
+    cashSub:'تحويلات فورية وفواتير والمزيد', send:'إرسال', receive:'استلام', topup:'إضافة رصيد', bank:'بنك',
+    txnHistory:'المعاملات', notifsPanel:'الإشعارات', accountPanel:'حسابي',
+    stBalance:'الرصيد', stData:'الإنترنت المتبقي', stMins:'الدقائق', stSms:'الرسائل',
+    miSettings:'الإعدادات والثيم', miPass:'تغيير كلمة المرور', miRoam:'التجوال الدولي',
+    miSupport:'خدمة العملاء', miSignout:'تسجيل الخروج',
+    nlHome:'الرئيسية', nlBundles:'الباقات', nlCash:'كاش', nlBills:'الفواتير', nlAccount:'حسابي',
+    rechargeTitle:'شحن الرصيد', rechargeBtn:'شحن الآن',
+    settingsTitle:'الإعدادات', srDarkmode:'الوضع الداكن', srDarksub:'تبديل الثيم',
+    srNotifs:'إشعارات', srNotifsSub:'تنبيهات الفواتير والعروض',
+    srLang:'Language / اللغة', srLangSub:'English / العربية',
+    sendTitle:'إرسال أموال', sendBtn:'أرسل الآن', receiveTitle:'استلام أموال',
+    receiveHint:'شارك رقمك لاستلام الأموال', closeBtn:'إغلاق',
+    topupTitle:'إضافة رصيد كاش', topupBtn:'أضف الآن',
+    subscribe:'اشترك', buy:'اشتري',
+  }
+};
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let DB = {};
+try { DB = JSON.parse(localStorage.getItem('voda_db')||'{}'); } catch(e){}
+let me = null, pickedAmt = 0, pickedTopup = 0, authMode = 'signin';
+let currentLang = localStorage.getItem('voda_lang')||'en';
+let darkMode = localStorage.getItem('voda_dark')!=='false';
+let notifsEnabled = localStorage.getItem('voda_notifs')!=='false';
+let compareSelected = [];
+
+function save() { try{ localStorage.setItem('voda_db',JSON.stringify(DB)); }catch(e){} }
+function T(key) { return TRANSLATIONS[currentLang][key]||TRANSLATIONS.en[key]||key; }
+
+// ══════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════
+window.addEventListener('load',()=>{
+  applyTheme();
+  applyLang();
+  setTimeout(()=>{ show('splash',false); show('auth',true); },1600);
+});
+
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', darkMode?'dark':'light');
+  document.getElementById('toggle-dark').checked = darkMode;
+}
+function applyLang(){
+  document.documentElement.setAttribute('data-lang', currentLang);
+  document.documentElement.setAttribute('dir', currentLang==='ar'?'rtl':'ltr');
+  document.getElementById('lang-en').classList.toggle('active', currentLang==='en');
+  document.getElementById('lang-ar').classList.toggle('active', currentLang==='ar');
+  // update all labeled elements
+  const t = TRANSLATIONS[currentLang];
+  const map = {
+    'auth-tagline':'tagline','tab-signin':'signin','tab-register':'register',
+    'lbl-phone':'phone','lbl-name':'name','lbl-pass':'password','lbl-plan':'choosePlan',
+    'auth-btn': authMode==='signin'?'authBtn_in':'authBtn_reg',
+    'lbl-balance':'balanceLabel','ha-recharge':'recharge','ha-bills':'bills','ha-cash':'cash','ha-offers':'offers',
+    'lbl-data':'data','lbl-mins':'mins','lbl-sms':'sms',
+    'lbl-bundles-title':'bundlesTitle','lbl-see-all':'seeAll','lbl-quick':'quick',
+    'qa-recharge':'qaRecharge','qa-bills':'qaBills','qa-bundles':'qaBundles','qa-cash':'qaCash',
+    'qa-compare':'qaCompare','qa-offers':'qaOffers','qa-notifs':'qaNotifs','qa-account':'qaAccount',
+    'lbl-bundles-panel':'bundlesPanel','lbl-compare-panel':'comparePanel','lbl-compare-hint':'compareHint',
+    'lbl-compare-clear':'compareClear','lbl-bills-panel':'billsPanel','lbl-current-bill':'currentBill',
+    'lbl-pay-now':'payNow','lbl-offers-panel':'offersPanel','lbl-cash-panel':'cashPanel',
+    'lbl-cash-balance':'cashBalance','lbl-cash-sub':'cashSub',
+    'lbl-send':'send','lbl-receive':'receive','lbl-topup':'topup','lbl-bank':'bank',
+    'lbl-txn-history':'txnHistory','lbl-notifs-panel':'notifsPanel','lbl-account-panel':'accountPanel',
+    'lbl-st-balance':'stBalance','lbl-st-data':'stData','lbl-st-mins':'stMins','lbl-st-sms':'stSms',
+    'mi-settings':'miSettings','mi-pass':'miPass','mi-roam':'miRoam','mi-support':'miSupport','mi-signout':'miSignout',
+    'nl-home':'nlHome','nl-bundles':'nlBundles','nl-cash':'nlCash','nl-bills':'nlBills','nl-account':'nlAccount',
+    'lbl-recharge-title':'rechargeTitle','lbl-recharge-btn':'rechargeBtn',
+    'lbl-settings-title':'settingsTitle','sr-darkmode':'srDarkmode','sr-darkmode-sub':'srDarksub',
+    'sr-notifs':'srNotifs','sr-notifs-sub':'srNotifsSub','sr-lang':'srLang','sr-lang-sub':'srLangSub',
+    'lbl-send-title':'sendTitle','lbl-send-btn':'sendBtn','lbl-receive-title':'receiveTitle',
+    'lbl-receive-hint':'receiveHint','lbl-close-btn':'closeBtn',
+    'lbl-topup-title':'topupTitle','lbl-topup-btn':'topupBtn',
+  };
+  Object.entries(map).forEach(([id,key])=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = t[key]||TRANSLATIONS.en[key]||'';
+  });
+  if(me) renderAll();
+}
+
+// ══════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════
+function show(id,visible){ document.getElementById(id).classList.toggle('hidden',!visible); }
+
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
+function setAuthMode(mode){
+  authMode=mode;
+  document.getElementById('tab-signin').classList.toggle('active',mode==='signin');
+  document.getElementById('tab-register').classList.toggle('active',mode==='register');
+  document.getElementById('auth-btn').textContent = T(mode==='signin'?'authBtn_in':'authBtn_reg');
+  document.getElementById('fg-name').style.display = mode==='register'?'block':'none';
+  document.getElementById('fg-plan').style.display = mode==='register'?'block':'none';
+  document.getElementById('auth-error').textContent='';
+}
+
+function doAuth(){
+  const phone=document.getElementById('f-phone').value.trim();
+  const pass=document.getElementById('f-pass').value.trim();
+  const err=document.getElementById('auth-error');
+  err.textContent='';
+  if(!phone){err.textContent=currentLang==='ar'?'أدخل رقم هاتفك':'Enter your phone number';return;}
+  if(pass.length<4){err.textContent=currentLang==='ar'?'كلمة المرور يجب أن تكون 4 أحرف على الأقل':'Password must be at least 4 characters';return;}
+  if(authMode==='register'){
+    const name=document.getElementById('f-name').value.trim();
+    const planRaw=document.getElementById('f-plan').value;
+    const [planName,planPrice]=planRaw.split('|');
+    if(!name){err.textContent=currentLang==='ar'?'أدخل اسمك':'Enter your name';return;}
+    if(DB[phone]){err.textContent=currentLang==='ar'?'هذا الرقم مسجل بالفعل':'Phone already registered';return;}
+    const renewal=new Date(); renewal.setMonth(renewal.getMonth()+1);
+    DB[phone]={
+      password:pass,name,phone,plan:planName,planPrice:parseInt(planPrice),
+      balance:100,cashBalance:0,
+      data:{used:0,total:15},minutes:{used:0,total:300},sms:{used:0,total:200},
+      renewal:renewal.toISOString().split('T')[0],
+      bills:[{month:'June 2025',amount:parseInt(planPrice)||149,status:'pending',date:'Jun 1, 2025'}],
+      transactions:[]
+    };
+    save();
+    showToast(currentLang==='ar'?'تم إنشاء الحساب!':'Account created! Sign in.','ok');
+    setAuthMode('signin'); document.getElementById('f-phone').value=phone; return;
+  }
+  const user=DB[phone];
+  if(!user||user.password!==pass){err.textContent=currentLang==='ar'?'رقم الهاتف أو كلمة المرور خاطئة':'Wrong phone or password';return;}
+  me=phone; show('auth',false); show('app',true);
+  scheduleNotifications();
+  renderAll();
+}
+
+function doSignout(){
+  me=null; switchTab('home'); show('app',false); show('auth',true);
+  document.getElementById('f-pass').value=''; document.getElementById('auth-error').textContent='';
+}
+
+// ══════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════
+function renderAll(){
+  const u=DB[me];
+  document.getElementById('top-name').textContent=u.name.split(' ')[0];
+  document.getElementById('hero-plan').textContent=u.plan;
+  document.getElementById('hero-phone').textContent=u.phone;
+  document.getElementById('hero-balance').textContent=u.balance.toFixed(2);
+  document.getElementById('hero-renewal').textContent=(currentLang==='ar'?'تجديد: ':'Renews: ')+u.renewal;
+  document.getElementById('lbl-balance').textContent=T('balanceLabel');
+
+  const dp=Math.round(u.data.used/u.data.total*100);
+  document.getElementById('uc-data-val').textContent=u.data.used+'GB';
+  document.getElementById('uc-data-sub').textContent=(u.data.total-u.data.used).toFixed(1)+(currentLang==='ar'?' جيجا متبقية':' GB remaining');
+  document.getElementById('bar-data').style.width=dp+'%';
+
+  const mp=Math.round(u.minutes.used/u.minutes.total*100);
+  document.getElementById('uc-min-val').textContent=u.minutes.used+'m';
+  document.getElementById('uc-min-sub').textContent=(u.minutes.total-u.minutes.used)+(currentLang==='ar'?' دقيقة متبقية':' min remaining');
+  document.getElementById('bar-min').style.width=mp+'%';
+
+  const sp=Math.round(u.sms.used/u.sms.total*100);
+  document.getElementById('uc-sms-val').textContent=u.sms.used+(currentLang==='ar'?' مرسلة':' sent');
+  document.getElementById('uc-sms-sub').textContent=(u.sms.total-u.sms.used)+(currentLang==='ar'?' رسالة متبقية':' SMS remaining');
+  document.getElementById('bar-sms').style.width=sp+'%';
+
+  const ini=u.name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('ah-avatar').textContent=ini;
+  document.getElementById('ah-name').textContent=u.name;
+  document.getElementById('ah-phone').textContent=u.phone;
+  document.getElementById('ah-plan').textContent=u.plan;
+  document.getElementById('st-balance').textContent=u.balance.toFixed(0);
+  document.getElementById('st-data').textContent=(u.data.total-u.data.used).toFixed(1);
+  document.getElementById('st-mins').textContent=u.minutes.total-u.minutes.used;
+  document.getElementById('st-sms').textContent=u.sms.total-u.sms.used;
+
+  document.getElementById('cash-balance').textContent=(u.cashBalance||0).toFixed(2);
+  document.getElementById('receive-phone-display').textContent=u.phone;
+
+  renderBundles(); renderBills(); renderOffers(); renderTransactions(); renderNotifications(); renderCompare();
+}
+
+function renderBundles(){
+  document.getElementById('bundle-scroll').innerHTML=BUNDLES.map((b,i)=>`
+    <div class="bundle-card ${b.cls}" onclick="buyBundle(${i})">
+      <div class="bundle-badge">${b.badge}</div>
+      <div class="bundle-name">${currentLang==='ar'?b.nameAr:b.name}</div>
+      <div class="bundle-desc">${currentLang==='ar'?b.descAr:b.desc}</div>
+      <div class="bundle-price">${b.price}<span> EGP/mo</span></div>
+      <div class="bundle-features">${(currentLang==='ar'?b.featuresAr:b.features).map(f=>`<div class="bundle-feature">${f}</div>`).join('')}</div>
+      <button class="bundle-buy-btn">${T('subscribe')}</button>
+    </div>`).join('');
+}
+
+function renderBills(){
+  const bills=DB[me].bills||[];
+  document.getElementById('bill-list').innerHTML=bills.map(b=>`
+    <div class="bill-item">
+      <div><div class="bi-month">${b.month}</div><div class="bi-date">${b.date||''}</div></div>
+      <div style="text-align:right"><div class="bi-amount">${b.amount} EGP</div><span class="bi-status s-${b.status}">${b.status==='paid'?(currentLang==='ar'?'مدفوعة':'Paid'):(currentLang==='ar'?'مستحقة':'Pending')}</span></div>
+    </div>`).join('');
+}
+
+function renderOffers(){
+  document.getElementById('offers-grid').innerHTML=OFFERS.map((o,i)=>`
+    <div class="offer-item">
+      <div class="offer-icon ${o.cls}">${o.icon}</div>
+      <div class="offer-body"><div class="offer-name">${currentLang==='ar'?o.nameAr:o.name}</div><div class="offer-desc">${currentLang==='ar'?o.descAr:o.desc}</div></div>
+      <div class="offer-right"><div class="offer-price">${o.price}</div><div class="offer-unit">EGP</div><button class="offer-btn" onclick="buyOffer(${i})">${T('buy')}</button></div>
+    </div>`).join('');
+}
+
+function renderTransactions(){
+  const txns=(DB[me].transactions||[]).slice(0,8);
+  if(!txns.length){
+    document.getElementById('txn-list').innerHTML=`<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">${currentLang==='ar'?'لا توجد معاملات بعد':'No transactions yet'}</div>`;
+    return;
+  }
+  document.getElementById('txn-list').innerHTML=txns.map(t=>`
+    <div class="txn-item">
+      <div class="txn-icon txn-${t.type==='in'?'in':'out'}">${t.type==='in'?'📥':'📤'}</div>
+      <div style="flex:1"><div class="txn-desc">${t.desc}</div><div class="txn-date">${t.date}</div></div>
+      <div class="txn-amt-${t.type==='in'?'in':'out'}">${t.type==='in'?'+':'-'}${t.amount} EGP</div>
+    </div>`).join('');
+}
+
+function renderNotifications(){
+  document.getElementById('notif-list').innerHTML=NOTIFICATIONS.map((n,i)=>`
+    <div class="notif-item${n.unread?' unread':''}" onclick="markRead(${i})">
+      <div class="notif-icon-wrap ${n.cls}">${n.icon}</div>
+      <div style="flex:1">
+        <div class="notif-title">${currentLang==='ar'?n.titleAr:n.title}</div>
+        <div class="notif-body">${currentLang==='ar'?n.bodyAr:n.body}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+      ${n.unread?'<div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px"></div>':''}
+    </div>`).join('');
+  const unreadCount=NOTIFICATIONS.filter(n=>n.unread).length;
+  document.getElementById('notif-btn').className='tb-icon-btn'+(unreadCount>0?' notif-dot':'');
+}
+
+function markRead(i){ NOTIFICATIONS[i].unread=false; renderNotifications(); }
+
+function renderCompare(){
+  const isAr=currentLang==='ar';
+  document.getElementById('compare-grid').innerHTML=BUNDLES.map((b,i)=>{
+    const sel=compareSelected.includes(i);
+    return `<div class="compare-select-card${sel?' selected':''}" onclick="toggleCompare(${i})">
+      <span class="cs-badge" style="background:rgba(230,0,0,.1);color:var(--red)">${b.badge}</span>
+      <div class="cs-name">${isAr?b.nameAr:b.name}</div>
+      <div class="cs-price">${b.price} EGP</div>
+    </div>`;
+  }).join('');
+
+  const wrap=document.getElementById('compare-table-wrap');
+  if(compareSelected.length===2){
+    const a=BUNDLES[compareSelected[0]], b2=BUNDLES[compareSelected[1]];
+    const rows=[
+      [isAr?'الباقة':'Plan', isAr?a.nameAr:a.name, isAr?b2.nameAr:b2.name],
+      [isAr?'السعر':'Price', a.price+' EGP', b2.price+' EGP'],
+      [isAr?'الإنترنت':'Data', (isAr?a.featuresAr:a.features)[0], (isAr?b2.featuresAr:b2.features)[0]],
+      [isAr?'الدقائق':'Minutes', (isAr?a.featuresAr:a.features)[1], (isAr?b2.featuresAr:b2.features)[1]],
+      [isAr?'الرسائل':'SMS', (isAr?a.featuresAr:a.features)[2], (isAr?b2.featuresAr:b2.features)[2]],
+      [isAr?'مميزات إضافية':'Extra', (isAr?a.featuresAr:a.features)[3], (isAr?b2.featuresAr:b2.features)[3]],
+    ];
+    wrap.innerHTML=`<div class="compare-table">${rows.map(r=>`<div class="ct-row"><div class="ct-label">${r[0]}</div><div class="ct-a">${r[1]}</div><div class="ct-b">${r[2]}</div></div>`).join('')}</div>`;
+  } else { wrap.innerHTML=''; }
+}
+
+function toggleCompare(i){
+  if(compareSelected.includes(i)) compareSelected=compareSelected.filter(x=>x!==i);
+  else if(compareSelected.length<2) compareSelected.push(i);
+  else { showToast(currentLang==='ar'?'يمكنك مقارنة باقتين فقط':'Max 2 bundles to compare','err'); return; }
+  renderCompare();
+}
+function clearCompare(){ compareSelected=[]; renderCompare(); }
+
+// ══════════════════════════════════════
+// ACTIONS
+// ══════════════════════════════════════
+function payCurrentBill(){
+  const u=DB[me];
+  const amt=u.bills[0]?.amount||149;
+  if(u.balance<amt){showToast(currentLang==='ar'?'الرصيد غير كافٍ':'Insufficient balance','err');return;}
+  u.balance=Math.round((u.balance-amt)*100)/100;
+  const now=new Date();
+  u.bills.unshift({month:now.toLocaleString('default',{month:'long'})+' '+now.getFullYear(),amount:amt,status:'paid',date:now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})});
+  save(); renderAll();
+  showToast(currentLang==='ar'?'تم دفع الفاتورة بنجاح!':'Bill paid successfully!','ok');
+}
+
+function buyBundle(i){
+  const b=BUNDLES[i], u=DB[me];
+  if(u.balance<b.price){showToast(currentLang==='ar'?'الرصيد غير كافٍ':'Insufficient balance','err');return;}
+  u.balance=Math.round((u.balance-b.price)*100)/100;
+  u.plan=currentLang==='ar'?b.nameAr:b.name;
+  save(); renderAll();
+  showToast((currentLang==='ar'?b.nameAr:b.name)+(currentLang==='ar'?' تم التفعيل!':' activated!'),'ok');
+}
+
+function buyOffer(i){
+  const o=OFFERS[i], u=DB[me];
+  if(u.balance<o.price){showToast(currentLang==='ar'?'الرصيد غير كافٍ':'Insufficient balance','err');return;}
+  u.balance=Math.round((u.balance-o.price)*100)/100;
+  save(); renderAll();
+  showToast((currentLang==='ar'?o.nameAr:o.name)+(currentLang==='ar'?' تم التفعيل!':' activated!'),'ok');
+}
+
+// RECHARGE
+function openRecharge(){ openModal('modal-recharge'); }
+function pickAmt(v,el){ pickedAmt=v; document.querySelectorAll('#modal-recharge .amount-chip').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); document.getElementById('custom-amt').value=''; }
+function doRecharge(){
+  const custom=parseFloat(document.getElementById('custom-amt').value);
+  const amt=custom||pickedAmt;
+  if(!amt||amt<=0){showToast(currentLang==='ar'?'اختر أو أدخل مبلغاً':'Select or enter amount','err');return;}
+  DB[me].balance=Math.round((DB[me].balance+amt)*100)/100;
+  save(); closeModal('modal-recharge'); pickedAmt=0;
+  document.querySelectorAll('#modal-recharge .amount-chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('custom-amt').value='';
+  renderAll();
+  showToast((currentLang==='ar'?'تم شحن ':'Recharged ')+amt+(currentLang==='ar'?' جنيه!':' EGP!'),'ok');
+}
+
+// CASH
+function openCashSend(){ openModal('modal-cash-send'); }
+function openCashReceive(){ openModal('modal-cash-receive'); }
+function openCashTopup(){ openModal('modal-cash-topup'); }
+function pickTopup(v,el){ pickedTopup=v; document.querySelectorAll('#modal-cash-topup .amount-chip').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); document.getElementById('topup-custom').value=''; }
+
+function doSendMoney(){
+  const toPhone=document.getElementById('send-phone').value.trim();
+  const amt=parseFloat(document.getElementById('send-amt').value);
+  const note=document.getElementById('send-note').value.trim();
+  const u=DB[me];
+  if(!toPhone||!amt||amt<=0){showToast(currentLang==='ar'?'أكمل البيانات':'Fill all fields','err');return;}
+  if((u.cashBalance||0)<amt){showToast(currentLang==='ar'?'رصيد الكاش غير كافٍ':'Insufficient cash balance','err');return;}
+  u.cashBalance=Math.round(((u.cashBalance||0)-amt)*100)/100;
+  if(!u.transactions) u.transactions=[];
+  u.transactions.unshift({type:'out',desc:(currentLang==='ar'?'إرسال إلى ':'Sent to ')+toPhone+(note?' — '+note:''),amount:amt,date:new Date().toLocaleDateString()});
+  save(); closeModal('modal-cash-send');
+  document.getElementById('send-phone').value=''; document.getElementById('send-amt').value=''; document.getElementById('send-note').value='';
+  renderAll();
+  showToast((currentLang==='ar'?'تم إرسال ':'Sent ')+amt+(currentLang==='ar'?' جنيه!':' EGP!'),'ok');
+}
+
+function doCashTopup(){
+  const custom=parseFloat(document.getElementById('topup-custom').value);
+  const amt=custom||pickedTopup;
+  if(!amt||amt<=0){showToast(currentLang==='ar'?'اختر مبلغاً':'Select amount','err');return;}
+  const u=DB[me];
+  u.cashBalance=Math.round(((u.cashBalance||0)+amt)*100)/100;
+  if(!u.transactions) u.transactions=[];
+  u.transactions.unshift({type:'in',desc:(currentLang==='ar'?'إضافة رصيد كاش':'Cash Top Up'),amount:amt,date:new Date().toLocaleDateString()});
+  save(); closeModal('modal-cash-topup'); pickedTopup=0;
+  document.querySelectorAll('#modal-cash-topup .amount-chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('topup-custom').value='';
+  renderAll();
+  showToast((currentLang==='ar'?'تم إضافة ':'Added ')+amt+(currentLang==='ar'?' جنيه للكاش!':' EGP to Cash!'),'ok');
+}
+
+// SETTINGS
+function openSettings(){ openModal('modal-settings'); }
+function toggleDark(v){ darkMode=v; localStorage.setItem('voda_dark',v); applyTheme(); }
+function toggleNotifs(v){ notifsEnabled=v; localStorage.setItem('voda_notifs',v); showToast(v?(currentLang==='ar'?'تم تفعيل الإشعارات':'Notifications enabled'):(currentLang==='ar'?'تم إيقاف الإشعارات':'Notifications disabled'),'ok'); }
+function setLang(lang){ currentLang=lang; localStorage.setItem('voda_lang',lang); applyLang(); closeModal('modal-settings'); }
+
+// PUSH NOTIFICATIONS
+function scheduleNotifications(){
+  if(!notifsEnabled) return;
+  if(!('Notification' in window)) return;
+  Notification.requestPermission().then(perm=>{
+    if(perm!=='granted') return;
+    const u=DB[me];
+    setTimeout(()=>{ new Notification('Vodafone', { body: currentLang==='ar'?`مرحباً ${u.name}! لديك فاتورة مستحقة.`:`Hi ${u.name}! Your bill is due soon.`, icon:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Vodafone_icon.svg/64px-Vodafone_icon.svg.png' }); },3000);
+    setTimeout(()=>{ new Notification('Vodafone', { body: currentLang==='ar'?'عرض خاص! 10 جيجا بـ 35 جنيه فقط.':'Special offer: 10GB for just 35 EGP!', icon:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Vodafone_icon.svg/64px-Vodafone_icon.svg.png' }); },8000);
+  });
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function switchTab(tab){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  const nb=document.getElementById('nav-'+tab);
+  if(nb) nb.classList.add('active');
+}
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>{ t.className='toast'; },3000);
+}
+
+// close modals on backdrop click
+document.querySelectorAll('.modal-bg').forEach(mb=>{
+  mb.addEventListener('click',e=>{ if(e.target===mb) mb.classList.remove('open'); });
+});
+
+document.getElementById('f-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') doAuth(); });
+</script>
+</body>
+</html>
